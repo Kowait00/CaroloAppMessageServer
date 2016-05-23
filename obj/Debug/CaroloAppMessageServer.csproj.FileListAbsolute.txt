@@ -1,0 +1,9 @@
+C:\Users\wacke\Documents\Programming\Visual Studio 2015\Projects\CaroloAppMessageServer\CaroloAppMessageServer\obj\Debug\CaroloAppMessageServer.csprojResolveAssemblyReference.cache
+C:\Users\wacke\Documents\Programming\Visual Studio 2015\Projects\CaroloAppMessageServer\CaroloAppMessageServer\obj\Debug\CaroloAppMessageServer.Form1.resources
+C:\Users\wacke\Documents\Programming\Visual Studio 2015\Projects\CaroloAppMessageServer\CaroloAppMessageServer\obj\Debug\CaroloAppMessageServer.csproj.GenerateResource.Cache
+C:\Users\wacke\Documents\Programming\Visual Studio 2015\Projects\CaroloAppMessageServer\CaroloAppMessageServer\bin\Debug\CaroloAppMessageServer.exe.config
+C:\Users\wacke\Documents\Programming\Visual Studio 2015\Projects\CaroloAppMessageServer\CaroloAppMessageServer\bin\Debug\CaroloAppMessageServer.exe
+C:\Users\wacke\Documents\Programming\Visual Studio 2015\Projects\CaroloAppMessageServer\CaroloAppMessageServer\bin\Debug\CaroloAppMessageServer.pdb
+C:\Users\wacke\Documents\Programming\Visual Studio 2015\Projects\CaroloAppMessageServer\CaroloAppMessageServer\obj\Debug\CaroloAppMessageServer.Properties.Resources.resources
+C:\Users\wacke\Documents\Programming\Visual Studio 2015\Projects\CaroloAppMessageServer\CaroloAppMessageServer\obj\Debug\CaroloAppMessageServer.exe
+C:\Users\wacke\Documents\Programming\Visual Studio 2015\Projects\CaroloAppMessageServer\CaroloAppMessageServer\obj\Debug\CaroloAppMessageServer.pdb

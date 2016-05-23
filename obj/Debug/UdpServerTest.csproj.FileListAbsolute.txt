@@ -1,0 +1,9 @@
+c:\users\wacke\documents\programming\visual studio 2015\Projects\UdpTest\UdpServerTest\bin\Debug\UdpServerTest.exe.config
+c:\users\wacke\documents\programming\visual studio 2015\Projects\UdpTest\UdpServerTest\bin\Debug\UdpServerTest.exe
+c:\users\wacke\documents\programming\visual studio 2015\Projects\UdpTest\UdpServerTest\bin\Debug\UdpServerTest.pdb
+c:\users\wacke\documents\programming\visual studio 2015\Projects\UdpTest\UdpServerTest\obj\Debug\UdpServerTest.csprojResolveAssemblyReference.cache
+c:\users\wacke\documents\programming\visual studio 2015\Projects\UdpTest\UdpServerTest\obj\Debug\UdpServerTest.Properties.Resources.resources
+c:\users\wacke\documents\programming\visual studio 2015\Projects\UdpTest\UdpServerTest\obj\Debug\UdpServerTest.csproj.GenerateResource.Cache
+c:\users\wacke\documents\programming\visual studio 2015\Projects\UdpTest\UdpServerTest\obj\Debug\UdpServerTest.exe
+c:\users\wacke\documents\programming\visual studio 2015\Projects\UdpTest\UdpServerTest\obj\Debug\UdpServerTest.pdb
+C:\Users\wacke\Documents\Programming\Visual Studio 2015\Projects\UdpTest\UdpServerTest\obj\Debug\UdpServerTest.Form1.resources
