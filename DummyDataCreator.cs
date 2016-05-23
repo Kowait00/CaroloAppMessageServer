@@ -14,13 +14,13 @@ namespace CaroloAppMessageServer
     /// Creates dummy UDP packages on specified port and sends them over the localhost loopback address.
     /// Test package data can be edited in the testMessages array.
     /// </summary>
-    class TestMessageCreator
+    class DummyDataCreator
     {
         string[] testMessages = new string[] {"Wuba", "Duba", "Dub", "Dub"};
         int port;
         private volatile bool _shouldStop = false;
 
-        public TestMessageCreator(int port)
+        public DummyDataCreator(int port)
         {
             this.port = port;
         }
@@ -49,7 +49,7 @@ namespace CaroloAppMessageServer
         /// <summary>
         /// Starts a new thread that sends dummy UDP packets
         /// </summary>
-        public void startSendingMessages()
+        public void startSendingDummyData()
         {
             Thread msgSenderThread = new Thread(new ThreadStart(sendMessages));
             msgSenderThread.Start();

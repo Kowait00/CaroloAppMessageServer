@@ -55,7 +55,7 @@
     <Compile Include="NetworkInterfaceCollector.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestMessageCreator.cs" />
+    <Compile Include="DummyDataCreator.cs" />
     <Compile Include="UdpBroadcastSender.cs" />
     <Compile Include="UdpPacketReceiver.cs" />
     <EmbeddedResource Include="Form1.resx">

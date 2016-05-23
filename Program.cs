@@ -35,8 +35,8 @@ namespace CaroloAppMessageServer
 
 
             //start a thread that generates udp packets on the loopback ip address for testing
-            TestMessageCreator testMsgCreator = new TestMessageCreator(portToReceiveOn);
-            testMsgCreator.startSendingMessages();
+            DummyDataCreator dummyDataCreator = new DummyDataCreator(portToReceiveOn);
+            dummyDataCreator.startSendingDummyData();
 
             //Find all network interfaces
             netIntfList = NetworkInterfaceCollector.findNetworkInterfaces();
@@ -52,7 +52,7 @@ namespace CaroloAppMessageServer
             }
 
             //Request the TestMessageCreator to stop sending messages
-            testMsgCreator.requestStop();
+            dummyDataCreator.requestStop();
 
         }
     }
