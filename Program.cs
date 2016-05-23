@@ -19,7 +19,6 @@ namespace CaroloAppMessageServer
         [STAThread]
         static void Main()
         {
-            //TestComment to see if GIT works
             //Setup GUI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
