@@ -14,10 +14,12 @@ namespace CaroloAppMessageServer
 {
     public partial class Form1 : Form
     {
-        DummyDataCreator dummyDataCreator = null;
+        // Global variables to set up the sender and receiver properties
         IPAddress multicastAddress = IPAddress.Parse("224.0.0.251");
-        int receiverPort = 8626;
         int multicastPort = 8625;
+        int receiverPort = 8626;
+
+        DummyDataCreator dummyDataCreator = null;
         UdpPacketReceiver packetReceiver = null;
         UdpBroadcastSender broadcastSender = null;
         BackgroundWorker networkCommunicationBackgroundWorker = null;
@@ -39,8 +41,8 @@ namespace CaroloAppMessageServer
                 setupGroupBox.Enabled = true;
                 runServerCheckbox.Text = "Start Server";
                 //Stop receiving and sending background worker
-                networkCommunicationBackgroundWorker.CancelAsync();
-                packetReceiver.CloseSocket();
+                if (networkCommunicationBackgroundWorker != null) networkCommunicationBackgroundWorker.CancelAsync();
+                if (packetReceiver != null) packetReceiver.CloseSocket();
                 if (dummyDataCreator != null) dummyDataCreator.requestStop();
             }
             else
@@ -54,7 +56,9 @@ namespace CaroloAppMessageServer
 
                 runServerCheckbox.Text = "Stop Server";
 
-                if (!Int32.TryParse(receiverPortInputTextBox.Text, out receiverPort))
+                // receiverPort input in range of possible ports
+                if (!Int32.TryParse(receiverPortInputTextBox.Text, out receiverPort)
+                    || receiverPort <= 0 || receiverPort > 65535)
                 {
                     validSetupVars = false;
                     receiverPortWarningLabel.Visible = true;
@@ -72,18 +76,15 @@ namespace CaroloAppMessageServer
                 if (validSetupVars)
                 {
                     setupGroupBox.Enabled = false;
-                    if (dummyDataCheckBox.Checked)
-                    {
-                        dummyDataCreator = new DummyDataCreator(receiverPort);
-                        dummyDataCreator.startSendingDummyData();
-                    }
+                    
                     try
                     {
                         // Initialization of receiver and sender for later usage in background worker
                         KeyValuePair<String, IPAddress> localNetworkInterface = (KeyValuePair<String, IPAddress>) senderInterfaceComboBox.SelectedItem;
                         packetReceiver = new UdpPacketReceiver(receiverPort);
                         broadcastSender = new UdpBroadcastSender(localNetworkInterface.Value, multicastAddress, multicastPort);
-                        
+                        senderInterfaceWarningLabel.Visible = false;
+
                         // Start receiving and sending UDP packets in background worker
                         networkCommunicationBackgroundWorker = new BackgroundWorker();
                         networkCommunicationBackgroundWorker.WorkerReportsProgress = true;
@@ -92,19 +93,31 @@ namespace CaroloAppMessageServer
                         networkCommunicationBackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(networkCommunicationBackgroundWorker_ProgressChanged);
                         networkCommunicationBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(networkCommunicationBackgroundWorker_RunWorkerCompleted);
                         networkCommunicationBackgroundWorker.RunWorkerAsync(receiverPort);
+
+                        // If checkbox checked start sending dummy data
+                        if (dummyDataCheckBox.Checked)
+                        {
+                            dummyDataCreator = new DummyDataCreator(receiverPort);
+                            dummyDataCreator.startSendingDummyData();
+                        }
                     }
-                    catch (Exception)
+                    catch (System.Net.Sockets.SocketException)
                     {
-                        Console.WriteLine(e.ToString());
-                        //TODO: Handle if backgroundworker is started again whiled
-                        //shutdown is still pending
+                        senderInterfaceWarningLabel.Visible = true;
+                        validSetupVars = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                        validSetupVars = false;
                     }
                 }
-                else
+                if (!validSetupVars)
                 {
-                    //If setup variable values are invalid uncheck checkboxbutton
-                    runServerCheckbox.Checked = false;
+                    //If setup variable values are invalid reset GUI to unstarted state
+                    runServerCheckbox.Checked = false;                    
                     runServerCheckbox.Text = "Start Server";
+                    setupGroupBox.Enabled = true;
                 }
             }
 
@@ -118,6 +131,11 @@ namespace CaroloAppMessageServer
             {
                 e.Handled = true;
             }
+        }
+
+        private void senderInterfaceComboBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            senderInterfaceWarningLabel.Visible = false;
         }
 
         private void dataReceivedOutputTextBox_TextChanged(object sender, EventArgs e)
@@ -144,7 +162,8 @@ namespace CaroloAppMessageServer
          */
         private void networkCommunicationBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            while(!networkCommunicationBackgroundWorker.CancellationPending)
+            networkCommunicationBackgroundWorker.ReportProgress(0, "Server started\nWaiting for UDP packets");
+            while (!networkCommunicationBackgroundWorker.CancellationPending)
             {
                 byte[] data = packetReceiver.receivePacket();
                 //Thread.Sleep(1000);
@@ -171,5 +190,12 @@ namespace CaroloAppMessageServer
             dataReceivedOutputTextBox.AppendText("Server " + result + "\n");
         }
 
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            //Stop receiving and sending background worker
+            if (networkCommunicationBackgroundWorker != null) networkCommunicationBackgroundWorker.CancelAsync();
+            if (packetReceiver != null) packetReceiver.CloseSocket();
+            if (dummyDataCreator != null) dummyDataCreator.requestStop();
+        }
     }
 }

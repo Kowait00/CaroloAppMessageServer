@@ -22,6 +22,7 @@ namespace CaroloAppMessageServer
         /// <summary>
         /// Sets up a sender for UDP broadcasts.
         /// Sends only through the specified network interface (e.g. only wifi or ethernet)
+        /// Throws System.Net.Sockets.SocketException if socket can't be bound with passed on parameters
         /// </summary>
         /// <param name="localAddress">Address of the network interface to send the broadcast from (e.g. Address of wifi or ethernet adapter)</param>
         /// <param name="multicastAddress">Address of the multicast group to send to</param>
@@ -46,6 +47,7 @@ namespace CaroloAppMessageServer
             {
                 Console.WriteLine(e.ToString());
                 Console.WriteLine("Couldn't set up socket for UDP multicasts");
+                throw;
             }
             
             Debug.WriteLine("Current multicast group is: " + multicastOption.Group);

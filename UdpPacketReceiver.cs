@@ -22,13 +22,14 @@ namespace CaroloAppMessageServer
         public UdpPacketReceiver(int port)
         {
             this.port = port;
+            if (port > 65535 || port < 0) throw new Exception("Invalid Port Number");
             try
             {
                 //Network Endpoints to listen to all IP addresses on the specified port
                 receiverEndpoint = new IPEndPoint(IPAddress.Any, port);
                 receiverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 receiverSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                receiverSocket.ReceiveTimeout = 2000;
+                //receiverSocket.ReceiveTimeout = 10000;
                 receiverSocket.Bind(receiverEndpoint);
                 remoteEndpoint = (EndPoint)new IPEndPoint(IPAddress.Any, 0);    //The endpoint from which we want to receive messages
             }
@@ -55,10 +56,10 @@ namespace CaroloAppMessageServer
             }
             catch (Exception e)
             {
-                string timeoutMessage = "ReceiverTimeout";
-                Console.WriteLine(e.ToString() + "\n" + timeoutMessage);
-                receivedData = Encoding.ASCII.GetBytes(timeoutMessage);
-                receivedByteCount = timeoutMessage.Length;
+                string abortReceivingMessage = "Stopped receiving UDP packets";
+                Console.WriteLine(e.ToString() + "\n" + abortReceivingMessage);
+                receivedData = Encoding.ASCII.GetBytes(abortReceivingMessage);
+                receivedByteCount = abortReceivingMessage.Length;
             }
             Console.WriteLine("Packet received from {0}: ", remoteEndpoint.ToString());
             Console.WriteLine("Contents: {0}", Encoding.ASCII.GetString(receivedData, 0, receivedByteCount));
@@ -72,7 +73,14 @@ namespace CaroloAppMessageServer
         /// </summary>
         public void CloseSocket()
         {
-            receiverSocket.Shutdown(SocketShutdown.Receive);
+            try
+            {
+                receiverSocket.Shutdown(SocketShutdown.Receive);
+            }
+            catch (Exception)
+            {
+                // Not currently receiving, that's ok
+            }
             receiverSocket.Close();
             //receiverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             //receiverSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);

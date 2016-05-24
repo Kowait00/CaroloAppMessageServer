@@ -38,7 +38,7 @@ namespace CaroloAppMessageServer
             while(!_shouldStop) { 
                 byte[] data = Encoding.ASCII.GetBytes(testMessages[i]);
                 server.SendTo(data, data.Length, SocketFlags.None, RemoteEndPoint);
-                Debug.WriteLine("Dummy UDP Ppcket sent");
+                Debug.WriteLine("Dummy UDP Packet sent");
                 i++;
                 i = i % testMessages.Length;
                 Thread.Sleep(1000);
