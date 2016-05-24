@@ -36,13 +36,15 @@ namespace CaroloAppMessageServer
             {
                 localMulticastEndpoint = (EndPoint)new IPEndPoint(localAddress, multicastPort);
                 multicastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                multicastSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                 multicastSocket.Bind(localMulticastEndpoint);
                 multicastOption = new MulticastOption(multicastAddress, localAddress);
                 multicastSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, multicastOption);
                 remoteEndpoint = new IPEndPoint(multicastAddress, multicastPort);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.ToString());
                 Console.WriteLine("Couldn't set up socket for UDP multicasts");
             }
             

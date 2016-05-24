@@ -27,11 +27,13 @@ namespace CaroloAppMessageServer
                 //Network Endpoints to listen to all IP addresses on the specified port
                 receiverEndpoint = new IPEndPoint(IPAddress.Any, port);
                 receiverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                receiverSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                 receiverSocket.Bind(receiverEndpoint);
                 remoteEndpoint = (EndPoint)new IPEndPoint(IPAddress.Any, 0);    //The endpoint from which we want to receive messages
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.ToString());
                 Console.WriteLine("Couldn't set up socket for receiving UDP packets");
             }
         }
@@ -53,7 +55,17 @@ namespace CaroloAppMessageServer
             return receivedData;
         }
 
-
+        /// <summary>
+        /// Stops the Socket from waiting for the next UDP packet by closing and reopening it
+        /// </summary>
+        public void stopReceiving()
+        {
+            receiverSocket.Shutdown(SocketShutdown.Receive);
+            //receiverSocket.Close();
+            //receiverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            //receiverSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            //receiverSocket.Bind(receiverEndpoint);
+        }
 
 
     }
