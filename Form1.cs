@@ -20,6 +20,7 @@ namespace CaroloAppMessageServer
         int multicastPort = 8625;
         UdpPacketReceiver packetReceiver = null;
         UdpBroadcastSender broadcastSender = null;
+        BackgroundWorker networkCommunicationBackgroundWorker = null;
 
         public Form1()
         {
@@ -37,10 +38,10 @@ namespace CaroloAppMessageServer
             {
                 setupGroupBox.Enabled = true;
                 runServerCheckbox.Text = "Start Server";
-                if(dummyDataCreator != null) dummyDataCreator.requestStop();
                 //Stop receiving and sending background worker
                 networkCommunicationBackgroundWorker.CancelAsync();
-                packetReceiver.stopReceiving();
+                packetReceiver.CloseSocket();
+                if (dummyDataCreator != null) dummyDataCreator.requestStop();
             }
             else
             {
@@ -82,7 +83,14 @@ namespace CaroloAppMessageServer
                         KeyValuePair<String, IPAddress> localNetworkInterface = (KeyValuePair<String, IPAddress>) senderInterfaceComboBox.SelectedItem;
                         packetReceiver = new UdpPacketReceiver(receiverPort);
                         broadcastSender = new UdpBroadcastSender(localNetworkInterface.Value, multicastAddress, multicastPort);
-                        // Start receiving and sending UDP packets
+                        
+                        // Start receiving and sending UDP packets in background worker
+                        networkCommunicationBackgroundWorker = new BackgroundWorker();
+                        networkCommunicationBackgroundWorker.WorkerReportsProgress = true;
+                        networkCommunicationBackgroundWorker.WorkerSupportsCancellation = true;
+                        networkCommunicationBackgroundWorker.DoWork += new DoWorkEventHandler(networkCommunicationBackgroundWorker_DoWork);
+                        networkCommunicationBackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(networkCommunicationBackgroundWorker_ProgressChanged);
+                        networkCommunicationBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(networkCommunicationBackgroundWorker_RunWorkerCompleted);
                         networkCommunicationBackgroundWorker.RunWorkerAsync(receiverPort);
                     }
                     catch (Exception)
@@ -138,9 +146,9 @@ namespace CaroloAppMessageServer
         {
             while(!networkCommunicationBackgroundWorker.CancellationPending)
             {
-                //byte[] data = packetReceiver.receivePacket();
-                Thread.Sleep(1000);
-                byte[] data = System.Text.Encoding.ASCII.GetBytes("TestDataThatWasNotReallyReceived");
+                byte[] data = packetReceiver.receivePacket();
+                //Thread.Sleep(1000);
+                //byte[] data = System.Text.Encoding.ASCII.GetBytes("TestDataThatWasNotReallyReceived");
                 Console.WriteLine("Packet received and sent on");
                 broadcastSender.sendPacket(data);
                 
@@ -160,7 +168,7 @@ namespace CaroloAppMessageServer
         private void networkCommunicationBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             string result = (string)e.Result;
-            dataReceivedOutputTextBox.AppendText("Server " + result);
+            dataReceivedOutputTextBox.AppendText("Server " + result + "\n");
         }
 
     }

@@ -28,6 +28,7 @@ namespace CaroloAppMessageServer
                 receiverEndpoint = new IPEndPoint(IPAddress.Any, port);
                 receiverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 receiverSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                receiverSocket.ReceiveTimeout = 2000;
                 receiverSocket.Bind(receiverEndpoint);
                 remoteEndpoint = (EndPoint)new IPEndPoint(IPAddress.Any, 0);    //The endpoint from which we want to receive messages
             }
@@ -45,9 +46,20 @@ namespace CaroloAppMessageServer
         public byte[] receivePacket()
         {
             byte[] receivedData = new byte[1024];
+            int receivedByteCount = 0;
 
             Console.WriteLine("Waiting for messages");
-            int receivedByteCount = receiverSocket.ReceiveFrom(receivedData, ref remoteEndpoint);
+            try
+            {
+                receivedByteCount = receiverSocket.ReceiveFrom(receivedData, ref remoteEndpoint);
+            }
+            catch (Exception e)
+            {
+                string timeoutMessage = "ReceiverTimeout";
+                Console.WriteLine(e.ToString() + "\n" + timeoutMessage);
+                receivedData = Encoding.ASCII.GetBytes(timeoutMessage);
+                receivedByteCount = timeoutMessage.Length;
+            }
             Console.WriteLine("Packet received from {0}: ", remoteEndpoint.ToString());
             Console.WriteLine("Contents: {0}", Encoding.ASCII.GetString(receivedData, 0, receivedByteCount));
 
@@ -56,12 +68,12 @@ namespace CaroloAppMessageServer
         }
 
         /// <summary>
-        /// Stops the Socket from waiting for the next UDP packet by closing and reopening it
+        /// Closes the socket currently used by the UdpPacketReceiver
         /// </summary>
-        public void stopReceiving()
+        public void CloseSocket()
         {
             receiverSocket.Shutdown(SocketShutdown.Receive);
-            //receiverSocket.Close();
+            receiverSocket.Close();
             //receiverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             //receiverSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             //receiverSocket.Bind(receiverEndpoint);

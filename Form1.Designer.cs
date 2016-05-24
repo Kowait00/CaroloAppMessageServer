@@ -43,7 +43,6 @@
             this.receiverPortInputTextBox = new System.Windows.Forms.TextBox();
             this.receiverPortWarningLabel = new System.Windows.Forms.Label();
             this.setupGroupBox = new System.Windows.Forms.GroupBox();
-            this.networkCommunicationBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.setupGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -218,14 +217,6 @@
             this.setupGroupBox.TabStop = false;
             this.setupGroupBox.Text = "Setup";
             // 
-            // networkCommunicationBackgroundWorker
-            // 
-            this.networkCommunicationBackgroundWorker.WorkerReportsProgress = true;
-            this.networkCommunicationBackgroundWorker.WorkerSupportsCancellation = true;
-            this.networkCommunicationBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.networkCommunicationBackgroundWorker_DoWork);
-            this.networkCommunicationBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.networkCommunicationBackgroundWorker_ProgressChanged);
-            this.networkCommunicationBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.networkCommunicationBackgroundWorker_RunWorkerCompleted);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -263,7 +254,6 @@
         private System.Windows.Forms.TextBox receiverPortInputTextBox;
         private System.Windows.Forms.Label receiverPortWarningLabel;
         private System.Windows.Forms.GroupBox setupGroupBox;
-        private System.ComponentModel.BackgroundWorker networkCommunicationBackgroundWorker;
     }
 }
 
