@@ -16,7 +16,7 @@ namespace CaroloAppMessageServer
     /// </summary>
     class DummyDataCreator
     {
-        string[] testMessages = new string[] {"Wuba", "Duba", "Dub", "Dub"};
+        string[] testMessages = new string[] {"Wuba", "Duba", "Dub", "Dub", "This is a really long string see if it breaks anything so don't even bother reading because it isd just gibberish. adkfljasdlkfjalkejflkasdvnlkadnvalkdjfalksdjfawlekfk Blablablubb"};
         int port;
         private volatile bool _shouldStop = false;
 

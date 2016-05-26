@@ -34,13 +34,22 @@ namespace CaroloAppMessageServer
 
         }
 
+        /// <summary>
+        /// Is triggered when the button for starting/stopping the server is toggled.
+        /// Checks for valid setup variablesset by the user in the Setup group box 
+        /// and, when they are valid, starts/stops background worker for receiving 
+        /// and sending UDP packets according to the setup variables.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void runServerCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            if(!runServerCheckbox.Checked)
+            // If run server button got unchecked stop everything that was started
+            if (!runServerCheckbox.Checked)
             {
                 setupGroupBox.Enabled = true;
                 runServerCheckbox.Text = "Start Server";
-                //Stop receiving and sending background worker
+                //Stop background worker for receiving and sending UDP packages
                 if (networkCommunicationBackgroundWorker != null) networkCommunicationBackgroundWorker.CancelAsync();
                 if (packetReceiver != null) packetReceiver.CloseSocket();
                 if (dummyDataCreator != null) dummyDataCreator.requestStop();
@@ -50,13 +59,12 @@ namespace CaroloAppMessageServer
                 // If the run server box got checked, check for valid setup variables
                 // and start the UDP reception and transmission.
                 // Also start sending dummy data if checkbox was checked.
-                // If run server box got unchecked stop everything that was started
 
                 bool validSetupVars = true;     //Only if all setup variables are valid the server can be started
 
                 runServerCheckbox.Text = "Stop Server";
 
-                // receiverPort input in range of possible ports
+                // receiverPort input in range of possible ports?
                 if (!Int32.TryParse(receiverPortInputTextBox.Text, out receiverPort)
                     || receiverPort <= 0 || receiverPort > 65535)
                 {
@@ -103,6 +111,8 @@ namespace CaroloAppMessageServer
                     }
                     catch (System.Net.Sockets.SocketException)
                     {
+                        // The selected network interface couldn't be used, (it's probably not connected to a network)
+                        // Prompt user to choose another one. 
                         senderInterfaceWarningLabel.Visible = true;
                         validSetupVars = false;
                     }
@@ -112,9 +122,9 @@ namespace CaroloAppMessageServer
                         validSetupVars = false;
                     }
                 }
+                // If any of the setup variable values are invalid reset GUI to unstarted state
                 if (!validSetupVars)
                 {
-                    //If setup variable values are invalid reset GUI to unstarted state
                     runServerCheckbox.Checked = false;                    
                     runServerCheckbox.Text = "Start Server";
                     setupGroupBox.Enabled = true;
@@ -123,6 +133,11 @@ namespace CaroloAppMessageServer
 
         }
 
+        /// <summary>
+        /// Prevents values other than digits from being entered into the textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void receiverPortInputTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             char ch = e.KeyChar;
@@ -138,6 +153,11 @@ namespace CaroloAppMessageServer
             senderInterfaceWarningLabel.Visible = false;
         }
 
+        /// <summary>
+        /// Scrolls textbox automatically to the bottom when new text is added
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dataReceivedOutputTextBox_TextChanged(object sender, EventArgs e)
         {
             // set the current caret position to the end
@@ -146,6 +166,11 @@ namespace CaroloAppMessageServer
             dataReceivedOutputTextBox.ScrollToCaret();
         }
 
+        /// <summary>
+        /// Retreives all network interfaces and adds them to the dropdown of the combobox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void senderInterfaceComboBox_DropDown(object sender, EventArgs e)
         {
             senderInterfaceComboBox.Items.Clear();
@@ -157,39 +182,54 @@ namespace CaroloAppMessageServer
             
         }
 
-        /*
-         * Background worker for network communication:
-         */
+        /// <summary>
+        /// Background worker for network communication.
+        /// Receives UDP packages and sends them on via UDP multicast
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void networkCommunicationBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             networkCommunicationBackgroundWorker.ReportProgress(0, "Server started\nWaiting for UDP packets");
             while (!networkCommunicationBackgroundWorker.CancellationPending)
             {
                 byte[] data = packetReceiver.receivePacket();
-                //Thread.Sleep(1000);
-                //byte[] data = System.Text.Encoding.ASCII.GetBytes("TestDataThatWasNotReallyReceived");
                 Console.WriteLine("Packet received and sent on");
                 broadcastSender.sendPacket(data);
                 
                 networkCommunicationBackgroundWorker.ReportProgress(0, Encoding.ASCII.GetString(data, 0, data.Length));
             }
-            //packetReceiver = null;
-            //broadcastSender = null;
+
             e.Result = "stopped";
         }
 
+        /// <summary>
+        /// Output the contents of newly received UDP packages by the backgroundworker to the output textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void networkCommunicationBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             string results = (string)e.UserState;
             dataReceivedOutputTextBox.AppendText(results + "\n");
         }
 
+        /// <summary>
+        /// Output completed message into the output textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void networkCommunicationBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             string result = (string)e.Result;
             dataReceivedOutputTextBox.AppendText("Server " + result + "\n");
         }
 
+        /// <summary>
+        /// When form is closed, release all resources properly
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             //Stop receiving and sending background worker

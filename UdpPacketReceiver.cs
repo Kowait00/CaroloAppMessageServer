@@ -29,7 +29,6 @@ namespace CaroloAppMessageServer
                 receiverEndpoint = new IPEndPoint(IPAddress.Any, port);
                 receiverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 receiverSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                //receiverSocket.ReceiveTimeout = 10000;
                 receiverSocket.Bind(receiverEndpoint);
                 remoteEndpoint = (EndPoint)new IPEndPoint(IPAddress.Any, 0);    //The endpoint from which we want to receive messages
             }
@@ -82,11 +81,7 @@ namespace CaroloAppMessageServer
                 // Not currently receiving, that's ok
             }
             receiverSocket.Close();
-            //receiverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            //receiverSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            //receiverSocket.Bind(receiverEndpoint);
         }
-
 
     }
 }
