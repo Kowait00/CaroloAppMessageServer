@@ -22,16 +22,19 @@ namespace CaroloAppMessageServer
         public UdpPacketReceiver(int port)
         {
             this.port = port;
+            if (port > 65535 || port < 0) throw new Exception("Invalid Port Number");
             try
             {
                 //Network Endpoints to listen to all IP addresses on the specified port
                 receiverEndpoint = new IPEndPoint(IPAddress.Any, port);
                 receiverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                receiverSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                 receiverSocket.Bind(receiverEndpoint);
                 remoteEndpoint = (EndPoint)new IPEndPoint(IPAddress.Any, 0);    //The endpoint from which we want to receive messages
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.ToString());
                 Console.WriteLine("Couldn't set up socket for receiving UDP packets");
             }
         }
@@ -43,9 +46,20 @@ namespace CaroloAppMessageServer
         public byte[] receivePacket()
         {
             byte[] receivedData = new byte[1024];
+            int receivedByteCount = 0;
 
             Console.WriteLine("Waiting for messages");
-            int receivedByteCount = receiverSocket.ReceiveFrom(receivedData, ref remoteEndpoint);
+            try
+            {
+                receivedByteCount = receiverSocket.ReceiveFrom(receivedData, ref remoteEndpoint);
+            }
+            catch (Exception e)
+            {
+                string abortReceivingMessage = "Stopped receiving UDP packets";
+                Console.WriteLine(e.ToString() + "\n" + abortReceivingMessage);
+                receivedData = Encoding.ASCII.GetBytes(abortReceivingMessage);
+                receivedByteCount = abortReceivingMessage.Length;
+            }
             Console.WriteLine("Packet received from {0}: ", remoteEndpoint.ToString());
             Console.WriteLine("Contents: {0}", Encoding.ASCII.GetString(receivedData, 0, receivedByteCount));
 
@@ -53,8 +67,21 @@ namespace CaroloAppMessageServer
             return receivedData;
         }
 
-
-
+        /// <summary>
+        /// Closes the socket currently used by the UdpPacketReceiver
+        /// </summary>
+        public void CloseSocket()
+        {
+            try
+            {
+                receiverSocket.Shutdown(SocketShutdown.Receive);
+            }
+            catch (Exception)
+            {
+                // Not currently receiving, that's ok
+            }
+            receiverSocket.Close();
+        }
 
     }
 }
