@@ -105,6 +105,7 @@
             this.dataReceivedOutputTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataReceivedOutputTextBox.Font = new System.Drawing.Font("Lucida Console", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dataReceivedOutputTextBox.Location = new System.Drawing.Point(12, 277);
             this.dataReceivedOutputTextBox.Name = "dataReceivedOutputTextBox";
             this.dataReceivedOutputTextBox.ReadOnly = true;
@@ -147,7 +148,7 @@
             this.receiverPortInputTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.receiverPortInputTextBox.Size = new System.Drawing.Size(46, 22);
             this.receiverPortInputTextBox.TabIndex = 14;
-            this.receiverPortInputTextBox.Text = "8626";
+            this.receiverPortInputTextBox.Text = "27000";
             this.receiverPortInputTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.receiverPortInputTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.receiverPortInputTextBox_KeyPress);
             // 

@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+using System.IO;
 using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CaroloAppMessageServer
@@ -17,7 +12,7 @@ namespace CaroloAppMessageServer
         // Global variables to set up the sender and receiver properties
         IPAddress multicastAddress = IPAddress.Parse("224.0.0.251");
         int multicastPort = 8625;
-        int receiverPort = 8626;
+        int receiverPort = 27000;
 
         DummyDataCreator dummyDataCreator = null;
         UdpPacketReceiver packetReceiver = null;
@@ -194,10 +189,13 @@ namespace CaroloAppMessageServer
             while (!networkCommunicationBackgroundWorker.CancellationPending)
             {
                 byte[] data = packetReceiver.receivePacket();
-                Console.WriteLine("Packet received and sent on");
-                broadcastSender.sendPacket(data);
-                
-                networkCommunicationBackgroundWorker.ReportProgress(0, Encoding.ASCII.GetString(data, 0, data.Length));
+                if (data.Length > 0)
+                {
+                    Console.WriteLine("Packet received and sent on");
+                    broadcastSender.sendPacket(data);
+
+                    networkCommunicationBackgroundWorker.ReportProgress(0, BinHexConverter.ByteArrayToHexString(data));
+                }
             }
 
             e.Result = "stopped";
@@ -212,6 +210,7 @@ namespace CaroloAppMessageServer
         {
             string results = (string)e.UserState;
             dataReceivedOutputTextBox.AppendText(results + "\n");
+            File.AppendAllText("ReceivedDataAsStrings.txt", (results + "\r\n"));
         }
 
         /// <summary>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,7 +17,10 @@ namespace CaroloAppMessageServer
     /// </summary>
     class DummyDataCreator
     {
-        string[] testMessages = new string[] {"Wuba", "Duba", "Dub", "Dub", "This is a really long string see if it breaks anything so don't even bother reading because it isd just gibberish. adkfljasdlkfjalkejflkasdvnlkadnvalkdjfalksdjfawlekfk Blablablubb"};
+        string[] testDataAsHexStrings = new string[] { "00:00:00:00:00:00:f0:3f:00:00:00:00:00:00:f0:3f:00:00:00:00:00:00:f0:3f:00:00:00:00:00:00:f0:3f:84:08:00:00",
+                                                       "f0:3f:00:00:00:00:f0:3f:00:00:00:00:00:00:f0:3f:00:00:00:00:00:00:f0:3f:00:00:00:00:00:00:f0:3f:84:08:00:00",
+                                                       "f0:3f:84:08:00:00:f0:3f:00:00:00:00:00:00:f0:3f:00:00:00:00:00:00:f0:3f:00:00:00:00:00:00:f0:3f:84:08:00:00"};
+
         int port;
         private volatile bool _shouldStop = false;
 
@@ -35,12 +39,12 @@ namespace CaroloAppMessageServer
             IPEndPoint RemoteEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
             Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             int i = 0;
-            while(!_shouldStop) { 
-                byte[] data = Encoding.ASCII.GetBytes(testMessages[i]);
+            while(!_shouldStop) {
+                byte[] data = BinHexConverter.HexStringToByteArray(testDataAsHexStrings[i]);//testDataBytes;
                 server.SendTo(data, data.Length, SocketFlags.None, RemoteEndPoint);
                 Debug.WriteLine("Dummy UDP Packet sent");
                 i++;
-                i = i % testMessages.Length;
+                i = i % testDataAsHexStrings.Length;
                 Thread.Sleep(1000);
             }
             Debug.WriteLine("Stopped sending dummy messages");
