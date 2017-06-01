@@ -42,7 +42,7 @@ namespace CaroloAppMessageServer
         /// <returns>Returns byte array of the contents of the packet</returns>
         public byte[] receivePacket()
         {
-            byte[] receivedData = new byte[1024];
+            byte[] receivedData = new byte[1600];
             int receivedByteCount = 0;
 
             Console.WriteLine("Waiting for messages");

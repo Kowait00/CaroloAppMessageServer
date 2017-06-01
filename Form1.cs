@@ -191,6 +191,13 @@ namespace CaroloAppMessageServer
                 byte[] data = packetReceiver.receivePacket();
                 if (data.Length > 0)
                 {
+                    Console.Write("Received Data as double: ");
+                    for (int i = 0; i < data.Length / sizeof(double); i++)
+                    {
+                        Console.Write(BitConverter.ToDouble(data, i * sizeof(double)) + "; ");
+                    }
+                    Console.WriteLine();
+
                     Console.WriteLine("Packet received and sent on");
                     broadcastSender.sendPacket(data);
 
