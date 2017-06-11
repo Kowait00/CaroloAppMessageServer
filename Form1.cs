@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+using System.IO;
 using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CaroloAppMessageServer
@@ -17,7 +12,7 @@ namespace CaroloAppMessageServer
         // Global variables to set up the sender and receiver properties
         IPAddress multicastAddress = IPAddress.Parse("224.0.0.251");
         int multicastPort = 8625;
-        int receiverPort = 8626;
+        int receiverPort = 27000;
 
         DummyDataCreator dummyDataCreator = null;
         UdpPacketReceiver packetReceiver = null;
@@ -191,13 +186,23 @@ namespace CaroloAppMessageServer
         private void networkCommunicationBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             networkCommunicationBackgroundWorker.ReportProgress(0, "Server started\nWaiting for UDP packets");
+            int numberReceivedPackets = 0;
+            DateTime lastProgressReport = DateTime.Now;
             while (!networkCommunicationBackgroundWorker.CancellationPending)
             {
                 byte[] data = packetReceiver.receivePacket();
-                Console.WriteLine("Packet received and sent on");
-                broadcastSender.sendPacket(data);
-                
-                networkCommunicationBackgroundWorker.ReportProgress(0, Encoding.ASCII.GetString(data, 0, data.Length));
+                if (data.Length > 0)
+                {
+                    numberReceivedPackets++;
+                    broadcastSender.sendPacket(data);
+
+                    if((DateTime.Now - lastProgressReport).TotalMilliseconds >= 1000)
+                    {
+                        networkCommunicationBackgroundWorker.ReportProgress(0, numberReceivedPackets + " Packets received and sent on");
+                        lastProgressReport = DateTime.Now;
+                        numberReceivedPackets = 0;
+                    }
+                }
             }
 
             e.Result = "stopped";
@@ -221,8 +226,14 @@ namespace CaroloAppMessageServer
         /// <param name="e"></param>
         private void networkCommunicationBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            string result = (string)e.Result;
-            dataReceivedOutputTextBox.AppendText("Server " + result + "\n");
+            try
+            {
+                dataReceivedOutputTextBox.AppendText("Server " + (string)e.Result + "\n");
+            }
+            catch (ObjectDisposedException)
+            {
+                // Window was closed, no need to display result
+            }
         }
 
         /// <summary>

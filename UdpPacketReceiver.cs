@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace CaroloAppMessageServer
 {
@@ -45,25 +43,23 @@ namespace CaroloAppMessageServer
         /// <returns>Returns byte array of the contents of the packet</returns>
         public byte[] receivePacket()
         {
-            byte[] receivedData = new byte[1024];
+            byte[] receivedData = new byte[256];
             int receivedByteCount = 0;
-
-            Console.WriteLine("Waiting for messages");
+            
             try
             {
                 receivedByteCount = receiverSocket.ReceiveFrom(receivedData, ref remoteEndpoint);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                string abortReceivingMessage = "Stopped receiving UDP packets";
-                Console.WriteLine(e.ToString() + "\n" + abortReceivingMessage);
-                receivedData = Encoding.ASCII.GetBytes(abortReceivingMessage);
-                receivedByteCount = abortReceivingMessage.Length;
+                //When receiving is aborted
+                Debug.WriteLine("Stopped receiving UDP packets");
+                receivedData = null;
+                receivedByteCount = 0;
             }
-            Console.WriteLine("Packet received from {0}: ", remoteEndpoint.ToString());
-            Console.WriteLine("Contents: {0}", Encoding.ASCII.GetString(receivedData, 0, receivedByteCount));
 
             Array.Resize(ref receivedData, receivedByteCount);
+            
             return receivedData;
         }
 

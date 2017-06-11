@@ -33,7 +33,6 @@
             this.senderInterfaceHeadingLabel = new System.Windows.Forms.Label();
             this.senderInterfaceWarningLabel = new System.Windows.Forms.Label();
             this.dummyDataCheckBox = new System.Windows.Forms.CheckBox();
-            this.dataReceivedOutputLabel = new System.Windows.Forms.Label();
             this.dataReceivedOutputTextBox = new System.Windows.Forms.RichTextBox();
             this.runServerCheckbox = new System.Windows.Forms.CheckBox();
             this.receiverPortDescriptionLabel = new System.Windows.Forms.Label();
@@ -77,7 +76,7 @@
             this.senderInterfaceWarningLabel.Name = "senderInterfaceWarningLabel";
             this.senderInterfaceWarningLabel.Size = new System.Drawing.Size(437, 17);
             this.senderInterfaceWarningLabel.TabIndex = 6;
-            this.senderInterfaceWarningLabel.Text = "Selected network interface is not supported. Please try another one.";
+            this.senderInterfaceWarningLabel.Text = "Selected network interface is not available. Please select another one.";
             this.senderInterfaceWarningLabel.Visible = false;
             // 
             // dummyDataCheckBox
@@ -90,25 +89,16 @@
             this.dummyDataCheckBox.Text = "Generate dummy data on loopback address";
             this.dummyDataCheckBox.UseVisualStyleBackColor = true;
             // 
-            // dataReceivedOutputLabel
-            // 
-            this.dataReceivedOutputLabel.AutoSize = true;
-            this.dataReceivedOutputLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dataReceivedOutputLabel.Location = new System.Drawing.Point(12, 257);
-            this.dataReceivedOutputLabel.Name = "dataReceivedOutputLabel";
-            this.dataReceivedOutputLabel.Size = new System.Drawing.Size(114, 17);
-            this.dataReceivedOutputLabel.TabIndex = 9;
-            this.dataReceivedOutputLabel.Text = "Data received:";
-            // 
             // dataReceivedOutputTextBox
             // 
             this.dataReceivedOutputTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataReceivedOutputTextBox.Location = new System.Drawing.Point(12, 277);
+            this.dataReceivedOutputTextBox.Font = new System.Drawing.Font("Lucida Console", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dataReceivedOutputTextBox.Location = new System.Drawing.Point(12, 261);
             this.dataReceivedOutputTextBox.Name = "dataReceivedOutputTextBox";
             this.dataReceivedOutputTextBox.ReadOnly = true;
-            this.dataReceivedOutputTextBox.Size = new System.Drawing.Size(658, 264);
+            this.dataReceivedOutputTextBox.Size = new System.Drawing.Size(658, 280);
             this.dataReceivedOutputTextBox.TabIndex = 10;
             this.dataReceivedOutputTextBox.Text = "";
             this.dataReceivedOutputTextBox.TextChanged += new System.EventHandler(this.dataReceivedOutputTextBox_TextChanged);
@@ -147,7 +137,7 @@
             this.receiverPortInputTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.receiverPortInputTextBox.Size = new System.Drawing.Size(46, 22);
             this.receiverPortInputTextBox.TabIndex = 14;
-            this.receiverPortInputTextBox.Text = "8626";
+            this.receiverPortInputTextBox.Text = "27000";
             this.receiverPortInputTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.receiverPortInputTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.receiverPortInputTextBox_KeyPress);
             // 
@@ -188,7 +178,6 @@
             this.Controls.Add(this.setupGroupBox);
             this.Controls.Add(this.runServerCheckbox);
             this.Controls.Add(this.dataReceivedOutputTextBox);
-            this.Controls.Add(this.dataReceivedOutputLabel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(550, 450);
             this.Name = "Form1";
@@ -207,7 +196,6 @@
         private System.Windows.Forms.Label senderInterfaceHeadingLabel;
         private System.Windows.Forms.Label senderInterfaceWarningLabel;
         private System.Windows.Forms.CheckBox dummyDataCheckBox;
-        private System.Windows.Forms.Label dataReceivedOutputLabel;
         private System.Windows.Forms.RichTextBox dataReceivedOutputTextBox;
         private System.Windows.Forms.CheckBox runServerCheckbox;
         private System.Windows.Forms.Label receiverPortDescriptionLabel;
