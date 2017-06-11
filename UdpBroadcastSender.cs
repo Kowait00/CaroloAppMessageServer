@@ -58,7 +58,6 @@ namespace CaroloAppMessageServer
         public void sendPacket(byte[] data)
         {
             multicastSocket.SendTo(data, data.Length, SocketFlags.None, remoteEndpoint);
-            Console.WriteLine("Multicast Message {0} sent", Encoding.ASCII.GetString(data, 0, data.Length) );
         }
     }
 }

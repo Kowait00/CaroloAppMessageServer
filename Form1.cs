@@ -186,22 +186,22 @@ namespace CaroloAppMessageServer
         private void networkCommunicationBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             networkCommunicationBackgroundWorker.ReportProgress(0, "Server started\nWaiting for UDP packets");
+            int numberReceivedPackets = 0;
+            DateTime lastProgressReport = DateTime.Now;
             while (!networkCommunicationBackgroundWorker.CancellationPending)
             {
                 byte[] data = packetReceiver.receivePacket();
                 if (data.Length > 0)
                 {
-                    Console.Write("Received Data as double: ");
-                    for (int i = 0; i < data.Length / sizeof(double); i++)
-                    {
-                        Console.Write(BitConverter.ToDouble(data, i * sizeof(double)) + "; ");
-                    }
-                    Console.WriteLine();
-
-                    Console.WriteLine("Packet received and sent on");
+                    numberReceivedPackets++;
                     broadcastSender.sendPacket(data);
 
-                    networkCommunicationBackgroundWorker.ReportProgress(0, BinHexConverter.ByteArrayToHexString(data));
+                    if((DateTime.Now - lastProgressReport).TotalMilliseconds >= 1000)
+                    {
+                        networkCommunicationBackgroundWorker.ReportProgress(0, numberReceivedPackets + " Packets received and sent on");
+                        lastProgressReport = DateTime.Now;
+                        numberReceivedPackets = 0;
+                    }
                 }
             }
 
@@ -217,7 +217,6 @@ namespace CaroloAppMessageServer
         {
             string results = (string)e.UserState;
             dataReceivedOutputTextBox.AppendText(results + "\n");
-            File.AppendAllText("ReceivedDataAsStrings.txt", (results + "\r\n"));
         }
 
         /// <summary>
@@ -227,8 +226,14 @@ namespace CaroloAppMessageServer
         /// <param name="e"></param>
         private void networkCommunicationBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            string result = (string)e.Result;
-            dataReceivedOutputTextBox.AppendText("Server " + result + "\n");
+            try
+            {
+                dataReceivedOutputTextBox.AppendText("Server " + (string)e.Result + "\n");
+            }
+            catch (ObjectDisposedException)
+            {
+                // Window was closed, no need to display result
+            }
         }
 
         /// <summary>
