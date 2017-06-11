@@ -55,7 +55,7 @@ namespace CaroloAppMessageServer
         /// Send a UDP multicast package
         /// </summary>
         /// <param name="data">Contents to send</param>
-        public void sendPacket(byte[] data)
+        public void SendPacket(byte[] data)
         {
             multicastSocket.SendTo(data, data.Length, SocketFlags.None, remoteEndpoint);
         }

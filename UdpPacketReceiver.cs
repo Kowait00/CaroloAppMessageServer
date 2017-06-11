@@ -41,7 +41,7 @@ namespace CaroloAppMessageServer
         /// Waits for next UDP packet and receives it
         /// </summary>
         /// <returns>Returns byte array of the contents of the packet</returns>
-        public byte[] receivePacket()
+        public byte[] ReceivePacket()
         {
             byte[] receivedData = new byte[256];
             int receivedByteCount = 0;

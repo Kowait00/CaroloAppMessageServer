@@ -47,7 +47,7 @@ namespace CaroloAppMessageServer
                 //Stop background worker for receiving and sending UDP packages
                 if (networkCommunicationBackgroundWorker != null) networkCommunicationBackgroundWorker.CancelAsync();
                 if (packetReceiver != null) packetReceiver.CloseSocket();
-                if (dummyDataCreator != null) dummyDataCreator.requestStop();
+                if (dummyDataCreator != null) dummyDataCreator.RequestStop();
             }
             else
             {
@@ -101,7 +101,7 @@ namespace CaroloAppMessageServer
                         if (dummyDataCheckBox.Checked)
                         {
                             dummyDataCreator = new DummyDataCreator(receiverPort);
-                            dummyDataCreator.startSendingDummyData();
+                            dummyDataCreator.StartSendingDummyData();
                         }
                     }
                     catch (System.Net.Sockets.SocketException)
@@ -169,7 +169,7 @@ namespace CaroloAppMessageServer
         private void senderInterfaceComboBox_DropDown(object sender, EventArgs e)
         {
             senderInterfaceComboBox.Items.Clear();
-            List<KeyValuePair<String, IPAddress>> networkInterfaces = NetworkInterfaceCollector.findNetworkInterfaces();
+            List<KeyValuePair<String, IPAddress>> networkInterfaces = NetworkInterfaceCollector.FindNetworkInterfaces();
             foreach(KeyValuePair<String, IPAddress> nIf in networkInterfaces)
             {
                 senderInterfaceComboBox.Items.Add(nIf);
@@ -190,11 +190,11 @@ namespace CaroloAppMessageServer
             DateTime lastProgressReport = DateTime.Now;
             while (!networkCommunicationBackgroundWorker.CancellationPending)
             {
-                byte[] data = packetReceiver.receivePacket();
+                byte[] data = packetReceiver.ReceivePacket();
                 if (data.Length > 0)
                 {
                     numberReceivedPackets++;
-                    broadcastSender.sendPacket(data);
+                    broadcastSender.SendPacket(data);
 
                     if((DateTime.Now - lastProgressReport).TotalMilliseconds >= 1000)
                     {
@@ -246,7 +246,7 @@ namespace CaroloAppMessageServer
             //Stop receiving and sending background worker
             if (networkCommunicationBackgroundWorker != null) networkCommunicationBackgroundWorker.CancelAsync();
             if (packetReceiver != null) packetReceiver.CloseSocket();
-            if (dummyDataCreator != null) dummyDataCreator.requestStop();
+            if (dummyDataCreator != null) dummyDataCreator.RequestStop();
         }
     }
 }

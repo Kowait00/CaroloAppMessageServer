@@ -29,7 +29,7 @@ namespace CaroloAppMessageServer
         /// Sends tesMessages as UDP packets repeatedly 
         /// to loopback address over specified port (1 packet per second)
         /// </summary>
-        private void sendMessages()
+        private void SendMessages()
         {
             _shouldStop = false;
             IPEndPoint RemoteEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
@@ -38,7 +38,7 @@ namespace CaroloAppMessageServer
             Debug.WriteLine("Started sending dummy messages");
             while (!_shouldStop)
             {
-                byte[] data = createDummyDataByteArray(i); //testDataBytes;
+                byte[] data = CreateDummyDataByteArray(i); //testDataBytes;
                 server.SendTo(data, data.Length, SocketFlags.None, RemoteEndPoint);
                 i++;
                 Thread.Sleep(20);
@@ -49,21 +49,21 @@ namespace CaroloAppMessageServer
         /// <summary>
         /// Starts a new thread that sends dummy UDP packets
         /// </summary>
-        public void startSendingDummyData()
+        public void StartSendingDummyData()
         {
-            Thread msgSenderThread = new Thread(new ThreadStart(sendMessages));
+            Thread msgSenderThread = new Thread(new ThreadStart(SendMessages));
             msgSenderThread.Start();
         }
 
         /// <summary>
         /// Stops the sending of dummy UDP packets
         /// </summary>
-        public void requestStop()
+        public void RequestStop()
         {
             _shouldStop = true;
         }
 
-        public static byte[] createDummyDataByteArray(int seed)
+        public static byte[] CreateDummyDataByteArray(int seed)
         {
             double poseX = .2 * seed * Math.Cos(.02 * seed * Math.PI);
             double poseY = .2 * seed * Math.Sin(.02 * seed * Math.PI);

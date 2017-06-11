@@ -19,7 +19,7 @@ namespace CaroloAppMessageServer
         /// Collects a list with the names and addresses of all present network interfaces of the PC
         /// (Different network interfaces might be e.g. Ethernet, Wifi, etc.)
         /// </summary>
-        public static List<KeyValuePair<String, IPAddress>> findNetworkInterfaces()
+        public static List<KeyValuePair<String, IPAddress>> FindNetworkInterfaces()
         {
             List<KeyValuePair<String, IPAddress>> networkInterfaces = new List<KeyValuePair<String, IPAddress>>();
 
